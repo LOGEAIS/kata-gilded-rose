@@ -2,7 +2,7 @@
 
 package com.gildedrose;
 
-public class Item {
+public class Item implements ItemInterface{
 
     private String name;
 
@@ -38,6 +38,21 @@ public class Item {
 
     public void setQuality(int quality) {
         this.quality = quality;
+    }
+
+    @Override
+    public void updateStrategy() {
+        if (this.getQuality() > 0 ) {
+            this.setQuality(this.getQuality() - 1);
+        }
+
+        this.setSellIn(this.getSellIn() - 1);
+
+        if (this.getSellIn() < 0) {
+            if (this.getQuality() > 0) {
+                this.setQuality(this.getQuality() - 1);
+            }
+        }
     }
 
     @Override
