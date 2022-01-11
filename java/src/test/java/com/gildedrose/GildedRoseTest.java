@@ -19,8 +19,8 @@ class GildedRoseTest {
 
         gildedRose.updateQuality();
 
-        assertEquals(19,foo.sellIn);
-        assertEquals(9, foo.quality);
+        assertEquals(19, foo.getSellIn());
+        assertEquals(9, foo.getQuality());
     }
 
     @Test
