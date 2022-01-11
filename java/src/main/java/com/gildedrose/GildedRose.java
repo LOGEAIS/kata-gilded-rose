@@ -1,6 +1,13 @@
 package com.gildedrose;
 
 class GildedRose {
+
+
+    private static final String CONCERT_PASSES = "Backstage passes to a TAFKAL80ETC concert";
+    private static final String AGED_BRIE = "Aged Brie";
+    private static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
+    public static final int MAX_QUALITY = 50;
+
     Item[] items;
 
     public GildedRose(Item[] items) {
@@ -14,46 +21,66 @@ class GildedRose {
 
     public void updateQuality() {
         for (Item item : items) {
-            if (!item.getName().equals("Aged Brie") && !item.getName()
-                .equals("Backstage passes to a TAFKAL80ETC concert")) {
-                if (item.getQuality() > 0 && !item.getName().equals("Sulfuras, Hand of Ragnaros")) {
-                    item.setQuality(item.getQuality() - 1);
-                }
+
+            if (isNotEqualToAgedBrieAndConcertPasses(item)) {
+                descreaseQualityIfNotSulfuras(item);
             } else {
-                if (item.getQuality() < 50) {
-                    item.setQuality(item.getQuality() + 1);
-
-                    if (item.getName().equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (item.getSellIn() < 11 && item.getQuality() < 50) {
-                            item.setQuality(item.getQuality() + 1);
-                        }
-
-                        if (item.getSellIn() < 6 && item.getQuality() < 50) {
-                            item.setQuality(item.getQuality() + 1);
-                        }
-                    }
-                }
+                increaseQuality(item);
             }
 
-            if (!item.getName().equals("Sulfuras, Hand of Ragnaros")) {
+            if (!isNameEquals(item.getName(), SULFURAS)) {
                 item.setSellIn(item.getSellIn() - 1);
             }
 
             if (item.getSellIn() < 0) {
-                if (!item.getName().equals("Aged Brie")) {
-                    if (!item.getName().equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (item.getQuality() > 0 && !item.getName().equals("Sulfuras, Hand of Ragnaros")) {
-                            item.setQuality(item.getQuality() - 1);
-                        }
-                    } else {
-                        item.setQuality(0);
-                    }
-                } else {
-                    if (item.getQuality() < 50) {
-                        item.setQuality(item.getQuality() + 1);
-                    }
-                }
+                isDifferentToAgedBrie(item);
             }
         }
+    }
+
+    private void increaseQuality(Item item) {
+        if (item.getQuality() < MAX_QUALITY) {
+            item.setQuality(item.getQuality() + 1);
+            if (isNameEquals(item.getName(), CONCERT_PASSES)) {
+                if (item.getSellIn() < 11) isLessToMaxQuality(item);
+                if (item.getSellIn() < 6) isLessToMaxQuality(item);
+            }
+        }
+    }
+
+    private boolean isNotEqualToAgedBrieAndConcertPasses(Item item) {
+        return !isNameEquals(item.getName(), AGED_BRIE) && !isNameEquals(item.getName(), CONCERT_PASSES);
+    }
+
+    private void isDifferentToAgedBrie(Item item) {
+        if (!isNameEquals(item.getName(), AGED_BRIE)) {
+            isDiffirentToConcertPasses(item);
+        } else {
+            isLessToMaxQuality(item);
+        }
+    }
+
+    private void isDiffirentToConcertPasses(Item item) {
+        if (!isNameEquals(item.getName(), CONCERT_PASSES)) {
+            descreaseQualityIfNotSulfuras(item);
+        } else {
+            item.setQuality(0);
+        }
+    }
+
+    private void descreaseQualityIfNotSulfuras(Item item) {
+        if (item.getQuality() > 0 && !isNameEquals(item.getName(), SULFURAS)) {
+            item.setQuality(item.getQuality() - 1);
+        }
+    }
+
+    private void isLessToMaxQuality(Item item) {
+        if (item.getQuality() < MAX_QUALITY) {
+            item.setQuality(item.getQuality() + 1);
+        }
+    }
+
+    private boolean isNameEquals(String itemName, String expectedName){
+        return itemName.equals(expectedName);
     }
 }
